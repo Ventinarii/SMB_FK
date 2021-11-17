@@ -41,6 +41,7 @@ class MyReceiver : BroadcastReceiver() {
                 ComponentName("com.example.s17149","com.example.s17149.AddOrEditActivity")
             ).also {
                    it.putExtra("UID",UID)
+                   it.setAction((2+2).toString())
             },
             PendingIntent.FLAG_ONE_SHOT
         );
