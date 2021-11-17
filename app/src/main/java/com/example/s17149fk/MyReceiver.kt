@@ -3,10 +3,7 @@ package com.example.s17149fk
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.SharedPreferences
+import android.content.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -30,12 +27,24 @@ class MyReceiver : BroadcastReceiver() {
         intentRecived=intentIncoming;
 
         //create pending intent for redirect
+        //val pendingIntent = PendingIntent.getActivity(
+        //    contextRecived,
+        //     1,
+        //    Intent(contextRecived,MainActivity::class.java),
+        //    PendingIntent.FLAG_ONE_SHOT
+        //);
+
         val pendingIntent = PendingIntent.getActivity(
             contextRecived,
              1,
-            Intent(contextRecived,intentRecived!!::class.java),
+            Intent().setComponent(
+                ComponentName("com.example.s17149","com.example.s17149.AddOrEditActivity")
+            ).also {
+                   it.putExtra("UID",UID)
+            },
             PendingIntent.FLAG_ONE_SHOT
         );
+
 
         //get unique id for notification
         sp = contextRecived!!.getSharedPreferences(AppCompatActivity.NOTIFICATION_SERVICE,AppCompatActivity.MODE_PRIVATE);
