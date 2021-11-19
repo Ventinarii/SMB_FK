@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.s17149fk">
 
-
+    <!--uses-permission android:name="com.example.s17149.PK2_1"/-->
 
     <application
         android:allowBackup="true"
@@ -16,10 +16,12 @@
             android:enabled="true"
             android:exported="true" />
 
+        <!--android:permission="com.example.s17149.PK2_1"-->
         <receiver
             android:name=".MyReceiver"
+
             android:enabled="true"
-            android:exported="true" />
+            android:exported="true"/>
 
         <activity
             android:name=".MainActivity"
