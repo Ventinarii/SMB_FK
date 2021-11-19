@@ -13,6 +13,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.util.jar.Manifest
 
 class MyReceiver : BroadcastReceiver() {
     lateinit var main: MainActivity;
@@ -29,15 +30,16 @@ class MyReceiver : BroadcastReceiver() {
     }
 
     override fun onReceive(context: Context, intent: Intent) {
-        recive(context,intent);
+        //recive(context,intent);
 
-        //val serviceIntent = Intent(context,MyService::class.java).putExtras(intent);
+        val serviceIntent = Intent(context,MyService::class.java).putExtras(intent);
 
         //context.applicationContext.bindService(serviceIntent,mcom,Context.BIND_AUTO_CREATE);
         //myService.recive(context,intent).toString();
         //context.unbindService(mcom);
 
-        //context.startService(intent);
+        context.startForegroundService(serviceIntent);
+
     }
 
 
@@ -53,14 +55,6 @@ class MyReceiver : BroadcastReceiver() {
         UID = intentIncoming.getLongExtra("UID",-1);
         contextRecived=contextIncoming;
         intentRecived=intentIncoming;
-
-        //create pending intent for redirect
-        //val pendingIntent = PendingIntent.getActivity(
-        //    contextRecived,
-        //     1,
-        //    Intent(contextRecived,MainActivity::class.java),
-        //    PendingIntent.FLAG_ONE_SHOT
-        //);
 
         val pendingIntent = PendingIntent.getActivity(
             contextRecived,

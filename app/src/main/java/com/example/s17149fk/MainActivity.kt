@@ -33,11 +33,9 @@ class MainActivity : AppCompatActivity() {
     }
     override fun onStart() {
         super.onStart()
-        registerReceiver(reciver, IntentFilter())
     }
     override fun onStop() {
         super.onStop()
-        unregisterReceiver(reciver);
     }
 
     fun goToAppButton(view: android.view.View) {}

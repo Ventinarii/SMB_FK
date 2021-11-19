@@ -23,6 +23,8 @@ public class MyService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId);
 
+        recive(this,intent!!);
+
         return Service.START_NOT_STICKY;
 
     }
