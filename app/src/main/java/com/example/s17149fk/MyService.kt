@@ -5,42 +5,32 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
 import android.content.*
+import android.os.Binder
 import android.os.IBinder
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
-class MyReceiver : BroadcastReceiver() {
-    lateinit var main: MainActivity;
-
-    lateinit var myService:MyService;
-    val mcom = object: ServiceConnection{
-        override fun onServiceConnected(p0: ComponentName?, p1: IBinder?) {
-            val binder = p1 as MyService.MyBinder;
-            myService = binder.getService();
-        }
-        override fun onServiceDisconnected(p0: ComponentName?) {
-            TODO("Not yet implemented")
-        }
+public class MyService : Service() {
+    public inner class MyBinder:Binder(){
+        public fun getService(): MyService = this@MyService;
+    }
+    private lateinit var myBinder: MyBinder;
+    init{
+        myBinder = MyBinder();
     }
 
-    override fun onReceive(context: Context, intent: Intent) {
-        recive(context,intent);
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        super.onStartCommand(intent, flags, startId);
 
-        //val serviceIntent = Intent(context,MyService::class.java).putExtras(intent);
+        return Service.START_NOT_STICKY;
 
-        //context.applicationContext.bindService(serviceIntent,mcom,Context.BIND_AUTO_CREATE);
-        //myService.recive(context,intent).toString();
-        //context.unbindService(mcom);
-
-        //context.startService(intent);
     }
 
+    override fun onBind(intent: Intent): IBinder {
 
+        return myBinder;
+    }
 
 
     private lateinit var sp: SharedPreferences
@@ -48,34 +38,28 @@ class MyReceiver : BroadcastReceiver() {
     var contextRecived: Context? = null
     var intentRecived: Intent? = null
     var UID: Long? = 0
-    fun recive(contextIncoming: Context, intentIncoming: Intent){
+    fun recive(contextIncoming: Context, intentIncoming: Intent): Int{
         //extract uid and save vars
         UID = intentIncoming.getLongExtra("UID",-1);
         contextRecived=contextIncoming;
         intentRecived=intentIncoming;
 
-        //create pending intent for redirect
-        //val pendingIntent = PendingIntent.getActivity(
-        //    contextRecived,
-        //     1,
-        //    Intent(contextRecived,MainActivity::class.java),
-        //    PendingIntent.FLAG_ONE_SHOT
-        //);
-
         val pendingIntent = PendingIntent.getActivity(
             contextRecived,
-             1,
+            1,
             Intent().setComponent(
                 ComponentName("com.example.s17149","com.example.s17149.AddOrEditActivity")
             ).also {
-                   it.putExtra("UID",UID)
-                   it.setAction((2+2).toString())
+                it.putExtra("UID",UID)
+                it.setAction((2+2).toString())
             },
             PendingIntent.FLAG_ONE_SHOT
         );
 
         //get unique id for notification
-        sp = contextRecived!!.getSharedPreferences(AppCompatActivity.NOTIFICATION_SERVICE,AppCompatActivity.MODE_PRIVATE);
+        sp = contextRecived!!.getSharedPreferences(
+            AppCompatActivity.NOTIFICATION_SERVICE,
+            AppCompatActivity.MODE_PRIVATE);
         spEditor = sp.edit();
         var notidicationId = sp.getInt("notidicationId",1);
         spEditor.putInt("notidicationId",notidicationId+1);
@@ -105,6 +89,6 @@ class MyReceiver : BroadcastReceiver() {
             .from(contextRecived!!)
             .notify(notidicationId,notification);
 
+        return 0;
     }
-
 }
